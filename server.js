@@ -32,11 +32,32 @@ app.use(methodOverride('_method'));
  
 
 //Api Points 
-const {createUser} = require('./api_points/Users/createuser');
+    //Create functions.
+        //User
+        const {createUser} = require('./api_points/Users/createuser');
+            createUser(app);
+        //Station
+        const {createstation} = require('./api_points/Stations/createstation');
+            createstation(app);
+    //Get functions.
+        
+        //Stations
+        const {getstations} = require('./api_points/Stations/getstations');
+            getstations(app);
 
-createUser(app);
+        //Pending Trips
+        const {getPendingTrips} = require('./api_points/Trips/PendingTrips/getPendingTrips');
+            getPendingTrips(app);
 
+    //Request functions. 
+        
+        //Pending Trips
+        const {handleNewRequest} = require('./api_points/Trips/PendingTrips/createPendingTrip');
+            handleNewRequest(app);
 
+   
+   
+    
 
 
 
