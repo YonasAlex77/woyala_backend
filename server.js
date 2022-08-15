@@ -40,27 +40,25 @@ app.use(methodOverride('_method'));
         const {createstation} = require('./api_points/Stations/createstation');
             createstation(app);
     //Get functions.
-        
         //Stations
         const {getstations} = require('./api_points/Stations/getstations');
             getstations(app);
-
+            
+    //Passengers
         //Pending Trips
-        const {getPendingTrips} = require('./api_points/Trips/PendingTrips/getPendingTrips');
-            getPendingTrips(app);
+                const {getPendingTrips_Passenger} = require('./api_points/Passengers/Trips/PendingTrips/getPendingTrips');
+                    getPendingTrips_Passenger(app);
+            //Request functions.
+                const {handleNewRequest_Passenger} = require('./api_points/Passengers/Trips/PendingTrips/createPendingTrip');
+                    handleNewRequest_Passenger(app);
+            //Remove functions.
+                const {handleRemoveRequest_Passenger} = require('./api_points/Passengers/Trips/PendingTrips/removePendingRequest');
+                    handleRemoveRequest_Passenger(app);
 
-    //Request functions. 
-        
-        //Pending Trips
-        const {handleNewRequest} = require('./api_points/Trips/PendingTrips/createPendingTrip');
-            handleNewRequest(app);
-
-   
-   
-    
-
-
-
+    //Taxi Driver
+        //register Active Taxi Driver
+                const {registerActive_Taxidriver} = require('./api_points/TaxiDrivers/QueueRegistration/registeractive');
+                    registerActive_Taxidriver(app);
 
 
 

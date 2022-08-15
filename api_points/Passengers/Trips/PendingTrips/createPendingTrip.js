@@ -1,4 +1,6 @@
-const PendingTrips = require('../../../resources/models/Trips/PendingTrips');
+const PendingTrips = require('../../../../resources/models/Trips/PendingTrips');
+
+const {MAXIMUM_TRAVELLERS} = require('../../../../Utils');
 
 //Creates a new pending Trip
 const createPendingTrip = (req) => {  
@@ -16,9 +18,8 @@ const createPendingTrip = (req) => {
             destinationLocation: destinationLocation
         })
         .then(
-            ()=>{
-                console.log("Created a new trip.");
-                return 1;       
+            (dbRes)=>{
+                return dbRes;       
             }
         )
 }
@@ -49,19 +50,25 @@ const addOnePassengerRegistered = (elementInput) => {
     const {_id, passengersRegistered} = elementInput;
     let incrementedPassengers = passengersRegistered +1;
     
-    PendingTrips.findByIdAndUpdate(_id, {
-        passengersRegistered: incrementedPassengers
-    })
-    .then(res=>{
-        console.log(res);
-    })
+    return PendingTrips.findByIdAndUpdate(_id, 
+            {
+                passengersRegistered: incrementedPassengers
+            },
+            {
+                returnDocument: 'after'
+            })
+            .then((dbRes)=>{
+                
+                return dbRes;
+                
+            })
 }
 
 
 
-const handleNewRequest = (app) => 
+const handleNewRequest_Passenger = (app) => 
     {
-        app.post('/handlenewrequest', (req,res)=>{
+        app.post('/handlenewrequest_passenger', (req,res)=>{
            
             checkIfRequestExists(req)
             .then(
@@ -73,7 +80,7 @@ const handleNewRequest = (app) =>
                         res_fun.map(
                                 (element)=>{
                                     //Assure to get the latest one and you wouldn't need this loop.
-                                    if(element.passengersRegistered < 12)
+                                    if(element.passengersRegistered < MAXIMUM_TRAVELLERS)
                                         {
                                             foundTrip.push(element);
                                         }
@@ -87,14 +94,23 @@ const handleNewRequest = (app) =>
             .then((foundTrip)=>{
                 
                 if(foundTrip.length===0){
-                    createPendingTrip(req);
-                    res.json('Created');
+                    //Create a pending Trip and Return it.
+                    
+                    createPendingTrip(req)
+                    .then((dbRes)=>{
+                        res.json(dbRes);
+                    });           
                     return;
                 }
 
-                addOnePassengerRegistered(foundTrip[0]);  
+                addOnePassengerRegistered(foundTrip[0])
+                
+                .then((dbRes)=>{
+                    res.json(dbRes);
+                })  
+                return;
             })            
         })
     }
 
-module.exports =  {handleNewRequest};
+module.exports =  {handleNewRequest_Passenger};
